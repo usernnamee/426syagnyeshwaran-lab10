@@ -11,6 +11,7 @@
 \usepackage{amsmath,amssymb,amsfonts}
 \usepackage{graphicx}
 \usepackage{siunitx}
+\sisetup{multi-part-units=single,separate-uncertainty=true, product-units=single}
 \usepackage[colorlinks=true,allcolors=blue]{hyperref}
 \usepackage{cleveref}
 \crefname{equation}{}{}
@@ -88,37 +89,40 @@ The detection of internal flaws in a 3D-printed metal sample was investigated us
 
 
 \section{Introduction}
+\IEEEPARstart{3}{D printing} conductive materials, including metals and conductive polymers, allows for complex designs and rapid production, but can introduce internal defects. These include cracks and incomplete bonding between layers. These flaws may significantly degrade mechanical strength or electrical performance while remaining invisible to external inspection \cite{dalal:2019:cracks}.
 
-3D printing conductive materials, including metals and conductive polymers, allows for complex designs and rapid production, but can introduce internal defects. These include cracks and incomplete bonding between layers. These flaws may significantly degrade mechanical strength or electrical performance while remaining invisible to external inspection \cite{1}.
+Common non-destructive testing (NDT) techniques, such as x-ray imaging or ultrasonic inspection, often require specialized equipment or a multitude of expenditures that may not be available in testing environments \cite{cawley:2001:nondestructive}. As a result, simpler and more accessible methods for defect detection are in demand.
 
-Common non-destructive testing (NDT) techniques, such as X-ray imaging or ultrasonic inspection, often require specialized equipment or a multitude of expenditures that may not be available in testing environments \cite{2}. As a result, simpler and more accessible methods for defect detection are in demand.
-
-Electrical probing provides a potential alternative, as internal changes in conductivity could alter current paths and voltage distributions \cite{3}. Because voltage can be measured at the surface of a metal, internal defects may be detected indirectly through imperfections in the observed voltage field.
+Electrical probing provides a potential alternative, as internal changes in conductivity could alter current paths and voltage distributions \cite{hauptmann:2018:revealing}. Because voltage can be measured at the surface of a metal, internal defects may be detected indirectly through imperfections in the observed voltage field.
 
 In this work, the feasibility of electrical non-destructive testing is investigated using a finite-difference computational model of steady-state conduction. By comparing voltage distributions in a uniform conductive sheet to those obtained in the presence of an internal low-conductivity defect, localized voltage perturbations are identified. These deviations from the baseline voltage field indicate the presence and approximate location of internal flaws.
 
 The following is the hypothesis being tested in this experiment: if there is no flaw, there should be no measurable change in voltage:
 \begin{equation} 
-    H_0: \Delta V = V_{flaw} - V_{clean} = 0
+H_0: \Delta V = V_{flaw} - V_{clean} = 0
 \end{equation}
 In the case that the flaw exists, the voltage distribution changes, showing a measurable disruption in the surface of the material. This can be modeled by the following equation:
 \begin{equation}
-    H_1: \Delta V = V_{flaw} - V_{clean} \neq 0
+H_1: \Delta V = V_{flaw} - V_{clean} \neq 0
 \end{equation}
 
-\section{Methods and materials}
 
+
+
+
+\section{Methods and materials}
 Under steady-state conditions and in the absence of internal current, electrical conduction in a material with varying conductivity $\sigma(x,y)$ is governed by
 
 \begin{equation}
-    \nabla \cdot (\sigma \nabla V) = 0
-\end{equation} \label{conductivity equation}
+\nabla \cdot (\sigma \nabla V) = 0
+\label{conductivity equation}
+\end{equation} 
 
-where V(x,y) is the electric potential. The material was assumed to be isotropic, and time-dependent factors were neglected.
+where $V(x,y)$ is the electric potential. The material was assumed to be isotropic, and time-dependent factors were neglected.
 
-The conductive domain was modeled as a two-dimensional square region on a uniform 60-node $\times$ 60-node finite-difference grid. This was to ensure that each node was relatively small compared to the simulated piece of metal, similar to how a real piece of metal has near-infinitely small particles. All voltages were evaluated at the grid nodes, with uniform spacing between each node for simplicity.
+The conductive domain was modeled as a two-dimensional square region on a uniform \qtyproduct{60 x 60}{node} finite-difference grid. This was to ensure that each node was relatively small compared to the simulated piece of metal, similar to how a real piece of metal has near-infinitely small particles. All voltages were evaluated at the grid nodes, with uniform spacing between each node for simplicity.
 
-Fixed-potential (Dirichlet) boundary conditions were applied on the left and right boundaries of the domain, with voltages of 1.0 V and 0.0 V, respectively, representing the source and sink electrodes. The top and bottom boundaries were treated as electrically insulating by enforcing zero normal voltage gradients. Together, these boundaries establish a controlled voltage field across the metal, allowing the low-conductivity regions to locally distort the voltage field.
+Fixed-potential (Dirichlet) boundary conditions were applied on the left and right boundaries of the domain, with voltages of \qty{1.0}{\volt} and \qty{0.0}{\volt}, respectively, representing the source and sink electrodes. The top and bottom boundaries were treated as electrically insulating by enforcing zero normal voltage gradients. Together, these boundaries establish a controlled voltage field across the metal, allowing the low-conductivity regions to locally distort the voltage field.
 
 To simulate defects in the metal, we modeled localized regions of lower electrical conductivity. Because a flawless piece of metal that has no defects would be uniformly conductive, the lower conductivity represents the absence of metal, which is the gaps and cracks in a real piece of metal. The conductivity of the flawed regions is several orders of magnitude lower than that of the surrounding flawless material. 
 
@@ -126,18 +130,16 @@ The governing equation was discretized using a finite-difference formulation tha
 \vspace{1em}
 \begin{equation} 
 V_{i,j}^{(\mathrm{GS})} = \frac{\sigma_{i+\frac{1}{2},j} \, V_{i+1,j} + \sigma_{i-\frac{1}{2},j} \, V_{i-1,j} + \sigma_{i,j+\frac{1}{2}} \, V_{i,j+1} + \sigma_{i,j-\frac{1}{2}} \, V_{i,j-1}}{\sigma_{i+\frac{1}{2},j} + \sigma_{i-\frac{1}{2},j} + \sigma_{i,j+\frac{1}{2}} + \sigma_{i,j-\frac{1}{2}}}
+\label{eq:Gauss-Seidel update formula}
 \end{equation}
-\label{Gauss-Seidel update formula}
-\vspace{0.5em}
 
 
 
-However, to further optimize and increase the speed of the program, we used the Successive-Over-Relaxation (SOR) technique until the maximum change in voltage between iterations fell below $1.0 \times 10^{-6}$ using the below formula:
+However, to further optimize and increase the speed of the program, we used the Successive-Over-Relaxation (SOR) technique until the maximum change in voltage between iterations fell below \qty{1.0e-6}{\volt} using the below formula:
 
 \begin{equation}
     V_{i,j}^{(n+1)} = (1-\omega)V_{i,j}^{(n)} + \omega V_{i,j}^{(\mathrm{GS})}
 \end{equation}
-\vspace{0.5em}
 
 The electric field was computed from the converged voltage distribution using:
 \begin{equation}
@@ -148,45 +150,56 @@ To isolate the perturbations induced by the defects, the voltage difference fiel
 \begin{equation} \nabla V = V_{flaw} - V_{clean} \end{equation}\label{Voltage difference field}
 The voltage difference field was then analyzed as the primary non-destructive testing signal.
 
-\section{Results}
 
+
+
+
+\section{Results}
 \begin{figure}
-    \centering
-    \includegraphics[width=1 \linewidth]{figures/noflaw.png}
-    \caption{Electric potential distribution for a uniform conductive sheet with no internal flaw.}
-    \label{fig:results}
+\begin{center}
+\includegraphics[width=\columnwidth]{figures/noflaw.png}
+\end{center}
+\caption{Electric potential distribution for a uniform conductive sheet with no internal flaw.}
+\label{fig:results}
 \end{figure}
 
 The electric potential is shown in \cref{fig:results} for a uniform 3D-printed metal with no internal flaw present. 
 
 \begin{figure}
-    \centering
-    \includegraphics[width=1\linewidth]{figures/flawpotential.png}
-    \caption{Electric potential distribution for a conductive sheet containing a low-conductivity flaw.}
-    \label{fig:flaw}
+\begin{center}
+\includegraphics[width=\columnwidth]{figures/flawpotential.png}
+\end{center}
+\caption{Electric potential distribution for a conductive sheet containing a low-conductivity flaw.}
+\label{fig:flaw}
 \end{figure} 
 The potential distribution after adding a flaw is shown in \cref{fig:flaw}, with arrows representing the electric field lines that outline the shape of the flaw and defect. In this simulation, the flaw is a thin, horizontal crack. 
 
 
 \begin{figure}
-    \centering
-    \includegraphics[width=1\linewidth]{figures/voltagedifference.png}
-    \caption{Voltage difference ($\Delta V$) between the defect-free and defective cases, serving as the electrical NDT signal.}
-    \label{fig: voltage difference}
+\begin{center}
+\includegraphics[width=\columnwidth]{figures/voltagedifference.png}
+\end{center}
+\caption{Voltage difference ($\Delta V$) between the defect-free and defective cases, serving as the electrical NDT signal.}
+\label{fig: voltage difference}
 \end{figure} 
 
- \cref{fig: voltage difference} shows the voltage difference, evidently highlighting the location at which there is an internal flaw. The blue voltage difference represents a location at which the voltage drops and the current is rerouted, whereas the red voltage difference represents a location at which the voltage is higher than expected, and the current is being impeded upstream.
+\Cref{fig: voltage difference} shows the voltage difference, evidently highlighting the location at which there is an internal flaw. The blue voltage difference represents a location at which the voltage drops and the current is rerouted, whereas the red voltage difference represents a location at which the voltage is higher than expected, and the current is being impeded upstream.
 
 \begin{figure}
-    \centering
-    \includegraphics[width=1\linewidth]{figures/conductivitymap.png}
-    \caption{Conductivity map of the simulated conductive sheet showing the location and geometry of the introduced flaw.}
-    \label{fig:conductivity map}
+\begin{center}
+\includegraphics[width=\columnwidth]{figures/conductivitymap.png}
+\end{center}
+\caption{Conductivity map of the simulated conductive sheet showing the location and geometry of the introduced flaw.}
+\label{fig:conductivity map}
 \end{figure}
 
 The shape of the flaw inserted into the surface of the metallic material is depicted in \cref{fig:conductivity map}. 
 
 These results support the idea that electrical probing is a viable non-destructive testing method for conductive 3D-printed materials, as changes in voltage reflect hidden disruptions in conductivity without physically damaging the part to test for imperfections. 
+
+
+
+
 
 
 \section{Discussion}
@@ -203,7 +216,11 @@ In practice, defects may have complex shapes, varying depths, and partial conduc
 
 
 
-\section{Acknowledgements} 
+
+
+
+
+\section{Acknowledgement} % In IEEE it is called ``acknowledgement'' 
 
 The team thanks all group members for their collaborative contributions to this work, including code development, simulation design, and manuscript writing. This work was made possible through close teamwork and collaboration among all group members throughout the research and writing process. 
 
@@ -216,7 +233,7 @@ Additionally, the team acknowledges the Science and Engineering Magnet Program f
 
 %\end{thebibliography}
 \bibliographystyle{IEEEtran}
-\bibliography{example.bib}
+\bibliography{jophy.bib}
 
 % Images for the biography should be a 1in wide by 1.25 high or a 5:4 aspect ratio
 % Keep your biography short and to the point or the editors will shorten it
@@ -404,21 +421,10 @@ Additionally, the team acknowledges the Science and Engineering Magnet Program f
 %    
 %    plt.show()
 %\end{lstlisting}
-%
-%\begin{thebibliography}{}
-%\bibitem{1}
-%N.~Dalal, Y.~Gu, D.~R.~Hines, A.~Dasgupta, and S.~Das,
-%``Cracks in the 3D-printed conductive traces of silver nanoparticle ink,'' \textit{Journal of Micromechanics and Microengineering}, vol.~29, no.~9, pp.~097001--097001, Jul.~2019, doi:~10.1088/1361-6439/ab2f25.
-%
-%\bibitem{2}
-%P.~Cawley, ``Non-destructive testing---current capabilities and future directions,'' \textit{Proceedings of the Institution of Mechanical Engineers, Part L: Journal of Materials: Design and Applications}, vol.~215, no.~4, pp.~213--223, Oct.~2001,
-%doi:~10.1177/146442070121500403.
-%
-%\bibitem{3}
-%A.~Hauptmann, M.~Ikehata, H.~Itou, and S.~Siltanen,
-%``Revealing cracks inside conductive bodies by electric surface measurements,'' \textit{Inverse Problems}, vol.~35, no.~2, p.~025004, Dec.~2018, doi:~10.1088/1361-6420/aaf273.
-%
-\end{thebibliography}
 
+
+
+
+%
 \end{document}
 
