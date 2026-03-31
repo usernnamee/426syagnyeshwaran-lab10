@@ -91,11 +91,13 @@ The detection of internal flaws in a 3D-printed metal sample was investigated us
 \section{Introduction}
 \IEEEPARstart{3}{D printing} conductive materials, including metals and conductive polymers, allows for complex designs and rapid production, but can introduce internal defects. These include cracks and incomplete bonding between layers. These flaws may significantly degrade mechanical strength or electrical performance while remaining invisible to external inspection \cite{dalal:2019:cracks}.
 
-Common non-destructive testing (NDT) techniques, such as x-ray imaging or ultrasonic inspection, often require specialized equipment or a multitude of expenditures that may not be available in testing environments \cite{cawley:2001:nondestructive}. As a result, simpler and more accessible methods for defect detection are in demand.
+Common non-destructive testing (NDT) techniques, such as x-ray imaging or ultrasonic inspection, often require specialized equipment or a multitude of expenditures that may not be available in testing environments \cite{cawley:2001:nondestructive,davis:2004:nondestructive}. As a result, simpler and more accessible methods for defect detection are in demand.
 
 Electrical probing provides a potential alternative, as internal changes in conductivity could alter current paths and voltage distributions \cite{hauptmann:2018:revealing}. Because voltage can be measured at the surface of a metal, internal defects may be detected indirectly through imperfections in the observed voltage field.
 
-In this work, the feasibility of electrical non-destructive testing is investigated using a finite-difference computational model of steady-state conduction. By comparing voltage distributions in a uniform conductive sheet to those obtained in the presence of an internal low-conductivity defect, localized voltage perturbations are identified. These deviations from the baseline voltage field indicate the presence and approximate location of internal flaws.
+Citations here \cite{ayyagari:2024:computational,baru:2024:demonstrating,cohen:2024:visualizing,edwards:2024:electric,kumar:2024:mapping}. 
+
+In this work, the feasibility of electrical non-destructive testing is investigated using a finite-difference computational model of steady-state conduction \cite{press:1992:numerical}. By comparing voltage distributions in a uniform conductive sheet to those obtained in the presence of an internal low-conductivity defect, localized voltage perturbations are identified. These deviations from the baseline voltage field indicate the presence and approximate location of internal flaws.
 
 The following is the hypothesis being tested in this experiment: if there is no flaw, there should be no measurable change in voltage:
 \begin{equation} 
@@ -150,7 +152,7 @@ To isolate the perturbations induced by the defects, the voltage difference fiel
 \begin{equation} \nabla V = V_{flaw} - V_{clean} \end{equation}\label{Voltage difference field}
 The voltage difference field was then analyzed as the primary non-destructive testing signal.
 
-
+This part needs to cite \cite{numpy,matplotlib}
 
 
 
@@ -233,7 +235,7 @@ Additionally, the team acknowledges the Science and Engineering Magnet Program f
 
 %\end{thebibliography}
 \bibliographystyle{IEEEtran}
-\bibliography{jophy.bib}
+\bibliography{lab.bib}
 
 % Images for the biography should be a 1in wide by 1.25 high or a 5:4 aspect ratio
 % Keep your biography short and to the point or the editors will shorten it
